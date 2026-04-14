@@ -71,6 +71,7 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400}
 .food-info .food-meta{font-size:11px;color:var(--gray);margin-top:2px}
 .food-actions{display:flex;gap:6px;align-items:center;flex-shrink:0}
 .btn-log{background:var(--green-light);color:var(--green);border:none;padding:5px 12px;border-radius:99px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer}
+.btn-edit-food{background:var(--blue-light);color:var(--blue);border:none;padding:5px 10px;border-radius:99px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer}
 .btn-del-food{background:none;border:none;cursor:pointer;color:#ccc;font-size:16px}
 .btn-del-food:hover{color:var(--coral)}
 .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -92,12 +93,22 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400}
 .hist-macro .hm-val{font-size:16px;font-weight:500;margin-top:1px}
 .hist-entry{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:.5px solid var(--border);font-size:13px}
 .hist-entry:last-child{border-bottom:none}
+/* Modals */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.38);display:flex;align-items:flex-end;justify-content:center;z-index:100}
 .modal{background:#fff;border-radius:20px 20px 0 0;padding:24px 20px 40px;width:100%;max-width:660px;max-height:90vh;overflow-y:auto}
 .modal h3{font-size:20px;margin-bottom:16px}
 .modal-tabs{display:flex;gap:3px;background:var(--gray-light);border-radius:8px;padding:3px;margin-bottom:16px}
 .modal-tab{flex:1;padding:6px;border:none;background:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--gray);cursor:pointer}
 .modal-tab.active{background:#fff;color:#1a1a18}
+/* Confirm dialog */
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}
+.confirm-box{background:#fff;border-radius:16px;padding:24px;max-width:320px;width:100%;text-align:center}
+.confirm-box h4{font-size:18px;margin-bottom:8px}
+.confirm-box p{font-size:13px;color:var(--gray);margin-bottom:20px;line-height:1.5}
+.confirm-actions{display:flex;gap:8px}
+.btn-confirm-cancel{flex:1;background:var(--gray-light);color:#1a1a18;border:none;padding:11px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer}
+.btn-confirm-delete{flex:1;background:#E24B4A;color:#fff;border:none;padding:11px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer}
+/* Forms */
 .form-group{margin-bottom:12px}
 .form-group label{display:block;font-size:11px;color:var(--gray);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em}
 .form-group input,.form-group select{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;background:var(--gray-light);outline:none}
@@ -120,10 +131,14 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400}
 .serving-input-row{display:flex;align-items:center;gap:8px;margin-top:6px;padding:10px;background:var(--green-light);border-radius:8px}
 .serving-input-row label{font-size:13px;color:var(--green);font-weight:500}
 .serving-input-row input{width:60px;padding:5px 8px;border:1px solid rgba(59,109,17,.3);border-radius:6px;font-size:14px;font-weight:500;text-align:center;background:#fff;outline:none}
+/* Ingredients */
 .ingredient-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
-.ingredient-row{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;background:var(--gray-light);border-radius:8px;padding:8px 10px}
+.ingredient-row{background:var(--gray-light);border-radius:8px;padding:8px 10px}
+.ingredient-row-header{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center}
 .ing-info{font-size:13px;font-weight:500}
 .ing-meta{font-size:11px;color:var(--gray)}
+.ing-other-pills{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.ing-other-pill{font-size:10px;background:var(--blue-light);color:var(--blue);padding:1px 6px;border-radius:99px}
 .btn-remove-ing{background:none;border:none;cursor:pointer;color:#bbb;font-size:16px}
 .add-ing-form{background:var(--gray-light);border-radius:10px;padding:12px;margin-bottom:8px}
 .add-ing-form h4{font-size:13px;font-weight:500;margin-bottom:10px;color:var(--gray)}
@@ -131,38 +146,54 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400}
 .recipe-totals{background:var(--green-light);border-radius:8px;padding:10px 12px;margin-bottom:10px;display:flex;gap:16px;flex-wrap:wrap}
 .rt-item{font-size:12px}
 .rt-label{color:var(--green);font-weight:500}
+/* Goals */
 .goals-form{background:var(--card);border-radius:var(--radius);border:.5px solid var(--border);padding:18px}
 .goals-form h3{font-size:18px;margin-bottom:14px}
 .goals-section-label{font-size:11px;font-weight:500;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;margin:16px 0 10px;padding-top:12px;border-top:.5px solid var(--border)}
 .btn-save{background:#1a1a18;color:#fff;border:none;padding:11px 24px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;margin-top:14px}
-.food-select-list{display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto;margin-bottom:10px}
-.food-select-item{padding:10px 12px;background:var(--gray-light);border-radius:8px;cursor:pointer;transition:background .12s}
-.food-select-item:hover{background:#e8e5df}
-.food-select-item.sel{background:#1a1a18;color:#fff}
-.food-select-item .fs-name{font-weight:500;font-size:14px}
-.food-select-item .fs-meta{font-size:11px;opacity:.7;margin-top:1px}
-/* other nutrients */
-.other-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
-.other-row{display:grid;grid-template-columns:1fr 100px auto;gap:6px;align-items:center}
-.other-row input{padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--gray-light);outline:none}
-.other-row input:focus{border-color:#1a1a18;background:#fff}
-.btn-remove-other{background:none;border:none;cursor:pointer;color:#bbb;font-size:16px;padding:0 4px}
-.btn-add-other{background:none;border:.5px solid var(--border);border-radius:8px;padding:6px 12px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;color:var(--gray)}
-/* goals custom rows */
-.goal-row{display:grid;grid-template-columns:1fr 120px 36px;gap:8px;align-items:center;margin-bottom:8px}
+/* Visibility toggles in goals */
+.vis-row{display:grid;grid-template-columns:1fr 120px 44px;gap:8px;align-items:center;margin-bottom:8px}
+.vis-row-label{font-size:13px;font-weight:500}
+.vis-row input{padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--gray-light);outline:none}
+.vis-row input:focus{border-color:#1a1a18;background:#fff}
+.vis-row input::placeholder{color:#bbb}
+.vis-toggle{display:flex;align-items:center;justify-content:center}
+/* Custom goal rows */
+.goal-row{display:grid;grid-template-columns:1fr 120px 44px 36px;gap:8px;align-items:center;margin-bottom:8px}
 .goal-row-label{font-size:13px;font-weight:500}
 .goal-row input{padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--gray-light);outline:none}
 .goal-row input:focus{border-color:#1a1a18;background:#fff}
 .goal-row input::placeholder{color:#bbb}
 .btn-rm-goal{background:none;border:none;cursor:pointer;color:#ccc;font-size:16px}
 .btn-rm-goal:hover{color:var(--coral)}
-/* export/import */
+/* Food selector */
+.food-select-list{display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto;margin-bottom:10px}
+.food-select-item{padding:10px 12px;background:var(--gray-light);border-radius:8px;cursor:pointer;transition:background .12s}
+.food-select-item:hover{background:#e8e5df}
+.food-select-item.sel{background:#1a1a18;color:#fff}
+.food-select-item .fs-name{font-weight:500;font-size:14px}
+.food-select-item .fs-meta{font-size:11px;opacity:.7;margin-top:1px}
+/* Other nutrients */
+.other-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.other-row{display:grid;grid-template-columns:1fr 90px 54px auto;gap:6px;align-items:center}
+.other-row input{padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--gray-light);outline:none}
+.other-row input:focus{border-color:#1a1a18;background:#fff}
+.btn-remove-other{background:none;border:none;cursor:pointer;color:#bbb;font-size:16px;padding:0 4px}
+.btn-add-other{background:none;border:.5px solid var(--border);border-radius:8px;padding:6px 12px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;color:var(--gray)}
+/* Export/Import */
 .data-section{background:var(--card);border-radius:var(--radius);border:.5px solid var(--border);padding:18px;margin-top:16px}
 .data-section h3{font-size:18px;margin-bottom:12px}
 .data-btns{display:flex;gap:10px;flex-wrap:wrap}
 .btn-export{background:var(--green-light);color:var(--green);border:none;padding:10px 18px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer}
 .btn-import{background:var(--blue-light);color:var(--blue);border:none;padding:10px 18px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer}
 .import-note{font-size:12px;color:var(--gray);margin-top:8px}
+/* Mini toggle for visibility */
+.mini-toggle{position:relative;width:32px;height:18px;flex-shrink:0}
+.mini-toggle input{opacity:0;width:0;height:0}
+.mini-slider{position:absolute;inset:0;background:#ccc;border-radius:99px;cursor:pointer;transition:.2s}
+.mini-slider:before{content:'';position:absolute;width:12px;height:12px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.mini-toggle input:checked+.mini-slider{background:var(--green-mid)}
+.mini-toggle input:checked+.mini-slider:before{transform:translateX(14px)}
 </style>
 </head>
 <body>
@@ -178,6 +209,18 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400}
   <div id="tab-foods" style="display:none"></div>
   <div id="tab-goals" style="display:none"></div>
   <div id="tab-history" style="display:none"></div>
+</div>
+
+<!-- Confirm Dialog -->
+<div id="confirm-overlay" class="confirm-overlay" style="display:none">
+  <div class="confirm-box">
+    <h4 id="confirm-title">Are you sure?</h4>
+    <p id="confirm-msg"></p>
+    <div class="confirm-actions">
+      <button class="btn-confirm-cancel" onclick="confirmCancel()">Cancel</button>
+      <button class="btn-confirm-delete" onclick="confirmOk()">Delete</button>
+    </div>
+  </div>
 </div>
 
 <!-- Log Modal -->
@@ -222,14 +265,16 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400}
 </div>
 </div>
 
-<!-- Food Modal -->
+<!-- Food Modal (Add/Edit) -->
 <div id="modal-food" class="modal-overlay" style="display:none" onclick="closeModal('modal-food')">
 <div class="modal" onclick="event.stopPropagation()">
-  <h3>Add food / recipe</h3>
+  <h3 id="food-modal-title">Add food / recipe</h3>
   <div class="modal-tabs">
-    <button class="modal-tab active" onclick="switchFoodTab('simple')">Simple entry</button>
-    <button class="modal-tab" onclick="switchFoodTab('recipe')">Build from ingredients</button>
+    <button class="modal-tab active" id="ftab-simple-btn" onclick="switchFoodTab('simple')">Simple entry</button>
+    <button class="modal-tab" id="ftab-recipe-btn" onclick="switchFoodTab('recipe')">Build from ingredients</button>
   </div>
+
+  <!-- Simple tab -->
   <div id="food-tab-simple">
     <div class="form-group"><label>Name</label><input id="food-name" placeholder="e.g. Chicken breast, Pasta bake…"/></div>
     <div class="form-group"><label>Default serving description</label><input id="food-serving" placeholder="e.g. 1 cup / 100g / 1 slice"/></div>
@@ -253,8 +298,10 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400}
       <button class="btn-add-other" onclick="addOtherFood()">+ Add nutrient</button>
     </div>
   </div>
+
+  <!-- Recipe tab -->
   <div id="food-tab-recipe" style="display:none">
-    <div class="form-group"><label>Recipe name</label><input id="recipe-name" placeholder="e.g. Chicken & rice meal prep"/></div>
+    <div class="form-group"><label>Recipe name</label><input id="recipe-name" placeholder="e.g. Chicken &amp; rice meal prep"/></div>
     <div id="ingredient-list" class="ingredient-list"></div>
     <div class="add-ing-form">
       <h4>Add ingredient</h4>
@@ -268,10 +315,17 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400}
         <div class="form-group"><label>Fiber (g)</label><input id="ing-fiber" type="number" placeholder="0"/></div>
         <div class="form-group"><label>Sugar (g)</label><input id="ing-sugar" type="number" placeholder="0"/></div>
       </div>
-      <button class="btn-small" onclick="addIngredient()">+ Add</button>
+      <div style="margin-top:8px">
+        <div style="font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Other nutrients</div>
+        <div class="other-list" id="ing-other-list"></div>
+        <button class="btn-add-other" onclick="addOtherIng()">+ Add nutrient</button>
+      </div>
+      <button class="btn-small" onclick="addIngredient()">+ Add ingredient</button>
     </div>
     <div id="recipe-totals-display"></div>
   </div>
+
+  <!-- Bulk prep toggle -->
   <div class="toggle-row">
     <div><div class="toggle-label">Bulk meal prep</div><div class="toggle-sub">Nutrition shown is per serving; log one serving at a time</div></div>
     <label class="toggle"><input type="checkbox" id="food-is-prep" onchange="togglePrepServings()"/><span class="slider"></span></label>
@@ -282,7 +336,7 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400}
   </div>
   <div class="form-actions">
     <button class="btn-secondary" onclick="closeModal('modal-food')">Cancel</button>
-    <button class="btn-primary" onclick="saveFood()">Save food</button>
+    <button class="btn-primary" id="food-save-btn" onclick="saveFood()">Save food</button>
   </div>
 </div>
 </div>
@@ -294,11 +348,17 @@ const sv = (k,v)=>localStorage.setItem(k,JSON.stringify(v));
 
 const CORE_FIELDS = ['calories','protein','carbs','fat','fiber','sugar','sodium','potassium','vitc','iron'];
 
+// Default visibility: all core shown, custom shown if added
+const DEFAULT_VIS = {calories:true,protein:true,carbs:true,fat:true,fiber:true,sugar:true,sodium:true,potassium:true,vitc:true,iron:true};
+
 let state = {
   foods: ld('n3_foods')||[],
-  goals: ld('n3_goals')||{calories:2000,protein:150,carbs:200,fat:65,fiber:25,sugar:50,sodium:2300,potassium:3500,vitc:90,iron:18,custom:[]},
+  goals: ld('n3_goals')||{calories:2000,protein:150,carbs:200,fat:65,fiber:25,sugar:50,sodium:2300,potassium:3500,vitc:90,iron:18,custom:[],vis:{...DEFAULT_VIS}},
 };
 if(!state.goals.custom) state.goals.custom=[];
+if(!state.goals.vis) state.goals.vis={...DEFAULT_VIS};
+// Ensure all core fields have a vis entry
+CORE_FIELDS.forEach(f=>{ if(state.goals.vis[f]===undefined) state.goals.vis[f]=true; });
 
 function getLog(d){return ld('n3_log_'+d)||[]}
 function setLog(d,l){sv('n3_log_'+d,l)}
@@ -321,35 +381,89 @@ function totalsOf(log){
 function n(v){return Math.round(v*10)/10}
 function ni(v){return Math.round(v)}
 function pct(v,g){return Math.min(100,ni((v/(g||1))*100))}
+function isVis(key){return state.goals.vis[key]!==false}
 
-/* ---- Today ---- */
+/* ---- Confirm dialog ---- */
+let _confirmCb=null;
+function confirmDialog(title,msg,cb){
+  document.getElementById('confirm-title').textContent=title;
+  document.getElementById('confirm-msg').textContent=msg;
+  _confirmCb=cb;
+  document.getElementById('confirm-overlay').style.display='flex';
+}
+function confirmOk(){document.getElementById('confirm-overlay').style.display='none';if(_confirmCb)_confirmCb();_confirmCb=null;}
+function confirmCancel(){document.getElementById('confirm-overlay').style.display='none';_confirmCb=null;}
+
+/* ---- Today tab ---- */
 function renderToday(){
   const log=getLog(TODAY);
   const {core:t,custom}=totalsOf(log);
   const g=state.goals;
-  const rem=Math.max(0,g.calories-t.calories);
-  const cp=pct(t.calories,g.calories);
+  const vis=g.vis||{};
+  const rem=Math.max(0,(g.calories||0)-t.calories);
+  const cp=g.calories?pct(t.calories,g.calories):0;
   const cc=cp>100?'#E24B4A':cp>85?'#BA7517':'#3B6D11';
 
-  // custom nutrient chips — only show ones with a goal OR that appear in today's log
+  // Calories wide card
+  const calCard=isVis('calories')?`
+    <div class="summary-card wide">
+      <div class="s-label">Calories today</div>
+      <div class="s-value">${ni(t.calories)}${g.calories?` <span style="font-size:15px;color:var(--gray);font-family:'DM Sans',sans-serif">/ ${g.calories}</span>`:''}</div>
+      <div class="s-sub">${g.calories?ni(rem)+' kcal remaining':'tracking'}</div>
+      ${g.calories?`<div class="progress-bar"><div class="progress-fill" style="width:${cp}%;background:${cc}"></div></div>`:''}
+    </div>`:''
+
+  // Fiber + sugar small cards
+  const fiberCard=isVis('fiber')?`<div class="summary-card"><div class="s-label">Fiber</div><div class="s-value" style="font-size:22px">${ni(t.fiber)}g</div><div class="s-sub">${g.fiber?`goal ${g.fiber}g`:'tracking'}</div></div>`:''
+  const sugarCard=isVis('sugar')?`<div class="summary-card"><div class="s-label">Sugar</div><div class="s-value" style="font-size:22px">${ni(t.sugar)}g</div><div class="s-sub">${g.sugar?`limit ${g.sugar}g`:'tracking'}</div></div>`:''
+
+  // Macro row — only shown items
+  const macros=[
+    {key:'protein',label:'Protein',val:t.protein,goal:g.protein,cls:'protein',color:'var(--coral-mid)'},
+    {key:'carbs',label:'Carbs',val:t.carbs,goal:g.carbs,cls:'carbs',color:'var(--amber-mid)'},
+    {key:'fat',label:'Fat',val:t.fat,goal:g.fat,cls:'fat',color:'var(--teal-mid)'},
+  ].filter(m=>isVis(m.key));
+  const macroRow=macros.length?`<div class="macro-row" style="grid-template-columns:repeat(${macros.length},1fr)">${macros.map(m=>`
+    <div class="macro-card ${m.cls}">
+      <div class="m-label">${m.label}</div>
+      <div class="m-val">${ni(m.val)}g</div>
+      <div class="m-goal">${m.goal?`/ ${m.goal}g`:'tracking'}</div>
+      ${m.goal?`<div class="progress-bar" style="margin-top:6px"><div class="progress-fill" style="width:${pct(m.val,m.goal)}%;background:${m.color}"></div></div>`:''}
+    </div>`).join('')}</div>`:''
+
+  // Micro strip — sodium, potassium, vitc, iron filtered by vis
+  const microItems=[
+    {key:'sodium',label:'Sodium',val:t.sodium,unit:'mg'},
+    {key:'potassium',label:'Potassium',val:t.potassium,unit:'mg'},
+    {key:'vitc',label:'Vit C',val:t.vitc,unit:'mg'},
+    {key:'iron',label:'Iron',val:t.iron,unit:'mg'},
+  ].filter(m=>isVis(m.key));
+  const microStrip=microItems.length?`<div class="micro-strip" style="grid-template-columns:repeat(${Math.min(4,microItems.length)},1fr)">${microItems.map(m=>`
+    <div class="micro-chip"><div class="mc-label">${m.label}</div><div class="mc-val">${ni(m.val)}<span style="font-size:10px;color:var(--gray)">${m.unit}</span></div></div>`).join('')}</div>`:''
+
+  // Custom nutrients
   const customGoalMap={};
   (g.custom||[]).forEach(cg=>customGoalMap[cg.name.toLowerCase().trim()]=cg);
   const customKeys=new Set([...Object.keys(custom),...Object.keys(customGoalMap)]);
   let customChips='';
-  customKeys.forEach(k=>{
+  const visCustomKeys=[...customKeys].filter(k=>{
+    const cg=customGoalMap[k];
+    return cg?isVis('custom_'+k):true; // always show if logged but not in goals; show goal-tracked ones based on vis
+  });
+  visCustomKeys.forEach(k=>{
     const tracked=custom[k];
     const goal=customGoalMap[k];
     const val=tracked?tracked.val:0;
     const unit=tracked?tracked.unit:(goal?goal.unit:'');
     const label=tracked?tracked.name:(goal?goal.name:k);
-    const goalStr=goal&&goal.goal?` / ${goal.goal}${unit}`:' (tracking)';
-    customChips+=`<div class="micro-chip"><div class="mc-label" title="${label}">${label}</div><div class="mc-val">${n(val)}<span style="font-size:10px;color:var(--gray)">${unit}</span></div><div style="font-size:10px;color:var(--gray)">${goalStr}</div></div>`;
+    const goalStr=goal&&goal.goal?` / ${goal.goal}${unit}`:'';
+    customChips+=`<div class="micro-chip"><div class="mc-label" title="${label}">${label}</div><div class="mc-val">${n(val)}<span style="font-size:10px;color:var(--gray)">${unit}</span></div><div style="font-size:10px;color:var(--gray)">${goalStr||'tracking'}</div></div>`;
   });
 
   const entries=log.length===0
     ?`<div class="empty-state">No entries yet — log your first meal.</div>`
     :log.map((e,i)=>{
-      const prepNote=e.isPrep?`<span class="pill prep">${e.servingsLogged||1}×</span>`:'';
+      const prepNote=e.isPrep?`<span class="pill prep">${e.servingsLogged||1}x</span>`:'';
       const otherNote=(e.other&&e.other.length)?`<span class="pill other">${e.other.length} other</span>`:'';
       return `<div class="entry-item">
         <div>
@@ -364,85 +478,89 @@ function renderToday(){
         </div>
         <div style="display:flex;align-items:center;gap:4px">
           <span class="entry-cals">${ni(e.calories)}</span>
-          <button class="entry-delete" onclick="deleteLog(${i})">×</button>
+          <button class="entry-delete" onclick="confirmDeleteLog(${i})" title="Remove entry">&#10005;</button>
         </div>
       </div>`;
     }).join('');
 
+  const hasSummaryCards=calCard||fiberCard||sugarCard;
   document.getElementById('tab-today').innerHTML=`
-    <div class="summary-grid">
-      <div class="summary-card wide">
-        <div class="s-label">Calories today</div>
-        <div class="s-value">${ni(t.calories)} <span style="font-size:15px;color:var(--gray);font-family:'DM Sans',sans-serif">/ ${g.calories}</span></div>
-        <div class="s-sub">${ni(rem)} kcal remaining</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${cp}%;background:${cc}"></div></div>
-      </div>
-      <div class="summary-card"><div class="s-label">Fiber</div><div class="s-value" style="font-size:22px">${ni(t.fiber)}g</div><div class="s-sub">${g.fiber?`goal ${g.fiber}g`:'tracking'}</div></div>
-      <div class="summary-card"><div class="s-label">Sugar</div><div class="s-value" style="font-size:22px">${ni(t.sugar)}g</div><div class="s-sub">${g.sugar?`limit ${g.sugar}g`:'tracking'}</div></div>
-    </div>
-    <div class="macro-row">
-      <div class="macro-card protein"><div class="m-label">Protein</div><div class="m-val">${ni(t.protein)}g</div><div class="m-goal">${g.protein?`/ ${g.protein}g`:'tracking'}</div>${g.protein?`<div class="progress-bar" style="margin-top:6px"><div class="progress-fill" style="width:${pct(t.protein,g.protein)}%;background:var(--coral-mid)"></div></div>`:''}</div>
-      <div class="macro-card carbs"><div class="m-label">Carbs</div><div class="m-val">${ni(t.carbs)}g</div><div class="m-goal">${g.carbs?`/ ${g.carbs}g`:'tracking'}</div>${g.carbs?`<div class="progress-bar" style="margin-top:6px"><div class="progress-fill" style="width:${pct(t.carbs,g.carbs)}%;background:var(--amber-mid)"></div></div>`:''}</div>
-      <div class="macro-card fat"><div class="m-label">Fat</div><div class="m-val">${ni(t.fat)}g</div><div class="m-goal">${g.fat?`/ ${g.fat}g`:'tracking'}</div>${g.fat?`<div class="progress-bar" style="margin-top:6px"><div class="progress-fill" style="width:${pct(t.fat,g.fat)}%;background:var(--teal-mid)"></div></div>`:''}</div>
-    </div>
-    <div class="micro-strip">
-      <div class="micro-chip"><div class="mc-label">Sodium</div><div class="mc-val">${ni(t.sodium)}<span style="font-size:10px;color:var(--gray)">mg</span></div></div>
-      <div class="micro-chip"><div class="mc-label">Potassium</div><div class="mc-val">${ni(t.potassium)}<span style="font-size:10px;color:var(--gray)">mg</span></div></div>
-      <div class="micro-chip"><div class="mc-label">Vit C</div><div class="mc-val">${ni(t.vitc)}<span style="font-size:10px;color:var(--gray)">mg</span></div></div>
-      <div class="micro-chip"><div class="mc-label">Iron</div><div class="mc-val">${ni(t.iron)}<span style="font-size:10px;color:var(--gray)">mg</span></div></div>
-    </div>
-    ${customKeys.size>0?`<div class="custom-strip">${customChips}</div>`:''}
+    ${hasSummaryCards?`<div class="summary-grid">${calCard}${fiberCard}${sugarCard}</div>`:''}
+    ${macroRow}
+    ${microStrip}
+    ${visCustomKeys.length>0?`<div class="custom-strip">${customChips}</div>`:''}
     <div class="section-header"><h2>Today's log</h2><button class="btn-add" onclick="openLogModal()">+ Log food</button></div>
     <div class="entry-list">${entries}</div>
   `;
 }
 
-function deleteLog(i){const log=getLog(TODAY);log.splice(i,1);setLog(TODAY,log);renderToday()}
+function confirmDeleteLog(i){
+  const log=getLog(TODAY);
+  const name=log[i]?log[i].name:'this entry';
+  confirmDialog('Remove log entry',`Remove "${name}" from today's log?`,()=>{
+    const l=getLog(TODAY);l.splice(i,1);setLog(TODAY,l);renderToday();
+  });
+}
 
-/* ---- Other nutrient rows (log modal) ---- */
+/* ---- Other nutrient rows ---- */
 let logOtherRows=[];
 function renderLogOtherRows(){
   document.getElementById('log-other-list').innerHTML=logOtherRows.map((r,i)=>`
     <div class="other-row">
-      <input placeholder="Nutrient name (e.g. Vitamin D)" value="${r.name}" oninput="logOtherRows[${i}].name=this.value"/>
-      <input type="number" placeholder="Amount" value="${r.value}" oninput="logOtherRows[${i}].value=this.value" style="text-align:right"/>
-      <input placeholder="unit" value="${r.unit}" oninput="logOtherRows[${i}].unit=this.value" style="width:52px;padding:7px 6px"/>
-      <button class="btn-remove-other" onclick="removeOtherLog(${i})">×</button>
+      <input placeholder="Nutrient name" value="${r.name}" oninput="logOtherRows[${i}].name=this.value"/>
+      <input type="number" placeholder="Amount" value="${r.value}" oninput="logOtherRows[${i}].value=this.value"/>
+      <input placeholder="unit" value="${r.unit}" oninput="logOtherRows[${i}].unit=this.value"/>
+      <button class="btn-remove-other" onclick="removeOtherLog(${i})">&#10005;</button>
     </div>`).join('');
 }
 function addOtherLog(){logOtherRows.push({name:'',value:'',unit:''});renderLogOtherRows()}
 function removeOtherLog(i){logOtherRows.splice(i,1);renderLogOtherRows()}
 
-/* ---- Other nutrient rows (food modal) ---- */
 let foodOtherRows=[];
 function renderFoodOtherRows(){
   document.getElementById('food-other-list').innerHTML=foodOtherRows.map((r,i)=>`
     <div class="other-row">
-      <input placeholder="Nutrient name (e.g. Vitamin D)" value="${r.name}" oninput="foodOtherRows[${i}].name=this.value"/>
-      <input type="number" placeholder="Amount" value="${r.value}" oninput="foodOtherRows[${i}].value=this.value" style="text-align:right"/>
-      <input placeholder="unit" value="${r.unit}" oninput="foodOtherRows[${i}].unit=this.value" style="width:52px;padding:7px 6px"/>
-      <button class="btn-remove-other" onclick="removeOtherFood(${i})">×</button>
+      <input placeholder="Nutrient name" value="${r.name}" oninput="foodOtherRows[${i}].name=this.value"/>
+      <input type="number" placeholder="Amount" value="${r.value}" oninput="foodOtherRows[${i}].value=this.value"/>
+      <input placeholder="unit" value="${r.unit}" oninput="foodOtherRows[${i}].unit=this.value"/>
+      <button class="btn-remove-other" onclick="removeOtherFood(${i})">&#10005;</button>
     </div>`).join('');
 }
 function addOtherFood(){foodOtherRows.push({name:'',value:'',unit:''});renderFoodOtherRows()}
 function removeOtherFood(i){foodOtherRows.splice(i,1);renderFoodOtherRows()}
 
+// Ingredient-level other nutrients
+let ingOtherRows=[];
+function renderIngOtherRows(){
+  const el=document.getElementById('ing-other-list');
+  if(!el)return;
+  el.innerHTML=ingOtherRows.map((r,i)=>`
+    <div class="other-row">
+      <input placeholder="Nutrient name" value="${r.name}" oninput="ingOtherRows[${i}].name=this.value"/>
+      <input type="number" placeholder="Amount" value="${r.value}" oninput="ingOtherRows[${i}].value=this.value"/>
+      <input placeholder="unit" value="${r.unit}" oninput="ingOtherRows[${i}].unit=this.value"/>
+      <button class="btn-remove-other" onclick="removeOtherIng(${i})">&#10005;</button>
+    </div>`).join('');
+}
+function addOtherIng(){ingOtherRows.push({name:'',value:'',unit:''});renderIngOtherRows()}
+function removeOtherIng(i){ingOtherRows.splice(i,1);renderIngOtherRows()}
+
 /* ---- Log modal ---- */
 let logFoodIdx=null;
 function openLogModal(prefill){
-  logFoodIdx=null; logOtherRows=[];
+  logFoodIdx=null;logOtherRows=[];
   const foods=state.foods;
   const sel=foods.length>0?`
     <div style="margin-bottom:12px">
       <div class="s-label" style="margin-bottom:6px">Quick-log from My Foods</div>
       <div class="food-select-list" id="food-selector-list">
         ${foods.map((f,i)=>`<div class="food-select-item" onclick="selectLogFood(${i})">
-          <div class="fs-name">${f.name}${f.isPrep?` <span class="pill prep">prep</span>`:''}</div>
-          <div class="fs-meta">${f.isPrep&&f.totalServings?f.totalServings+' servings · ':''}${ni(f.calories)} kcal${f.servingDesc?' · '+f.servingDesc:''}</div>
+          <div class="fs-name">${f.name}${f.isPrep?' <span class="pill prep">prep</span>':''}</div>
+          <div class="fs-meta">${f.isPrep&&f.totalServings?f.totalServings+' servings &middot; ':''}${ni(f.calories)} kcal${f.servingDesc?' &middot; '+f.servingDesc:''}</div>
         </div>`).join('')}
       </div>
-      <div style="text-align:center;font-size:12px;color:var(--gray);margin:8px 0">— or enter manually below —</div>
-    </div>`:' ';
+      <div style="text-align:center;font-size:12px;color:var(--gray);margin:8px 0">&mdash; or enter manually below &mdash;</div>
+    </div>`:'';
   document.getElementById('log-food-selector').innerHTML=sel;
   document.getElementById('log-manual-section').style.display='block';
   document.getElementById('log-serving-section').style.display='none';
@@ -476,10 +594,10 @@ function selectLogFood(i){
 
 function saveLog(){
   let entry;
-  if(logFoodIdx!==null&&state.foods[logFoodIdx]?.isPrep){
+  if(logFoodIdx!==null&&state.foods[logFoodIdx]&&state.foods[logFoodIdx].isPrep){
     const f=state.foods[logFoodIdx];
     const s=parseFloat(document.getElementById('log-servings-count').value)||1;
-    entry={name:f.name,serving:f.servingDesc?`${s}× ${f.servingDesc}`:`${s} serving${s!==1?'s':''}`,isPrep:true,servingsLogged:s};
+    entry={name:f.name,serving:f.servingDesc?s+'x '+f.servingDesc:s+' serving'+(s!==1?'s':''),isPrep:true,servingsLogged:s};
     CORE_FIELDS.forEach(field=>entry[field]=(f[field]||0)*s);
     entry.other=(f.other||[]).map(o=>({...o,value:(+o.value||0)*s}));
   } else if(logFoodIdx!==null){
@@ -489,7 +607,7 @@ function saveLog(){
     entry.other=(f.other||[]).map(o=>({...o}));
   } else {
     const nm=document.getElementById('log-name').value.trim();
-    if(!nm) return;
+    if(!nm)return;
     entry={name:nm,serving:document.getElementById('log-serving').value.trim(),isPrep:false};
     ['cal','protein','carbs','fat','fiber','sugar','sodium','potassium','vitc','iron'].forEach(f=>{
       const key=f==='cal'?'calories':f;
@@ -509,12 +627,13 @@ function renderFoods(){
     :state.foods.map((f,i)=>`
       <div class="food-item">
         <div class="food-info">
-          <div class="food-name">${f.name} ${f.isPrep?`<span class="pill prep">${f.totalServings} servings</span>`:''} ${f.isRecipe?`<span class="pill other">recipe</span>`:''}</div>
-          <div class="food-meta">${f.servingDesc||'per serving'} · ${ni(f.calories)} kcal · P${ni(f.protein)}g C${ni(f.carbs)}g F${ni(f.fat)}g${f.other&&f.other.length?' · '+f.other.length+' other':''}</div>
+          <div class="food-name">${f.name}${f.isPrep?` <span class="pill prep">${f.totalServings} servings</span>`:''}${f.isRecipe?' <span class="pill other">recipe</span>':''}</div>
+          <div class="food-meta">${f.servingDesc||'per serving'} &middot; ${ni(f.calories)} kcal &middot; P${ni(f.protein)}g C${ni(f.carbs)}g F${ni(f.fat)}g${f.other&&f.other.length?' &middot; '+f.other.length+' other':''}</div>
         </div>
         <div class="food-actions">
           <button class="btn-log" onclick="logFromFood(${i})">Log</button>
-          <button class="btn-del-food" onclick="deleteFood(${i})">×</button>
+          <button class="btn-edit-food" onclick="editFood(${i})">Edit</button>
+          <button class="btn-del-food" onclick="confirmDeleteFood(${i})" title="Delete food">&#10005;</button>
         </div>
       </div>`).join('');
   document.getElementById('tab-foods').innerHTML=`
@@ -522,18 +641,29 @@ function renderFoods(){
     <div class="foods-list">${html}</div>`;
 }
 
-function logFromFood(i){logFoodIdx=null;openLogModal();setTimeout(()=>selectLogFood(i),50)}
-function deleteFood(i){state.foods.splice(i,1);persist();renderFoods()}
+function confirmDeleteFood(i){
+  const name=state.foods[i]?state.foods[i].name:'this food';
+  confirmDialog('Delete food',`Delete "${name}" from your food library? This won't affect past logs.`,()=>{
+    state.foods.splice(i,1);persist();renderFoods();
+  });
+}
 
-/* ---- Food modal ---- */
+function logFromFood(i){logFoodIdx=null;openLogModal();setTimeout(()=>selectLogFood(i),50)}
+
+/* ---- Food modal (add + edit) ---- */
 let ingredients=[];
 let activeFoodTab='simple';
+let editFoodIdx=null; // null = adding new, number = editing
 
 function openFoodModal(){
-  ingredients=[];foodOtherRows=[];activeFoodTab='simple';
+  editFoodIdx=null;
+  ingredients=[];foodOtherRows=[];ingOtherRows=[];activeFoodTab='simple';
+  document.getElementById('food-modal-title').textContent='Add food / recipe';
+  document.getElementById('food-save-btn').textContent='Save food';
   document.getElementById('food-tab-simple').style.display='block';
   document.getElementById('food-tab-recipe').style.display='none';
-  document.querySelectorAll('.modal-tab').forEach((b,i)=>b.classList.toggle('active',i===0));
+  document.getElementById('ftab-simple-btn').classList.add('active');
+  document.getElementById('ftab-recipe-btn').classList.remove('active');
   ['name','serving','cal','protein','carbs','fat','fiber','sugar','sodium','potassium','vitc','iron'].forEach(f=>{
     const el=document.getElementById('food-'+f);if(el)el.value='';
   });
@@ -545,11 +675,54 @@ function openFoodModal(){
   renderFoodOtherRows();renderIngredients();openModal('modal-food');
 }
 
+function editFood(i){
+  editFoodIdx=i;
+  const f=state.foods[i];
+  ingredients=[];foodOtherRows=[];ingOtherRows=[];
+  document.getElementById('food-modal-title').textContent='Edit food';
+  document.getElementById('food-save-btn').textContent='Save changes';
+
+  if(f.isRecipe){
+    activeFoodTab='recipe';
+    document.getElementById('food-tab-simple').style.display='none';
+    document.getElementById('food-tab-recipe').style.display='block';
+    document.getElementById('ftab-simple-btn').classList.remove('active');
+    document.getElementById('ftab-recipe-btn').classList.add('active');
+    document.getElementById('recipe-name').value=f.name||'';
+    // Restore ingredients if saved (best effort — we store a flat representation)
+    ingredients=(f.ingredients||[]).map(ing=>({...ing}));
+  } else {
+    activeFoodTab='simple';
+    document.getElementById('food-tab-simple').style.display='block';
+    document.getElementById('food-tab-recipe').style.display='none';
+    document.getElementById('ftab-simple-btn').classList.add('active');
+    document.getElementById('ftab-recipe-btn').classList.remove('active');
+    document.getElementById('food-name').value=f.name||'';
+    document.getElementById('food-serving').value=f.servingDesc||'';
+    const fieldMap={cal:'calories',protein:'protein',carbs:'carbs',fat:'fat',fiber:'fiber',sugar:'sugar',sodium:'sodium',potassium:'potassium',vitc:'vitc',iron:'iron'};
+    Object.entries(fieldMap).forEach(([field,key])=>{
+      const el=document.getElementById('food-'+field);if(el)el.value=f[key]!=null?f[key]:'';
+    });
+    foodOtherRows=(f.other||[]).map(o=>({...o}));
+    renderFoodOtherRows();
+  }
+
+  const isPrep=!!f.isPrep;
+  document.getElementById('food-is-prep').checked=isPrep;
+  document.getElementById('prep-servings-row').style.display=isPrep?'block':'none';
+  document.getElementById('food-total-servings').value=f.totalServings||'';
+  document.getElementById('food-prep-serving').value=f.isPrep?(f.servingDesc||''):'';
+
+  renderIngredients();
+  openModal('modal-food');
+}
+
 function switchFoodTab(tab){
   activeFoodTab=tab;
   document.getElementById('food-tab-simple').style.display=tab==='simple'?'block':'none';
   document.getElementById('food-tab-recipe').style.display=tab==='recipe'?'block':'none';
-  document.querySelectorAll('.modal-tab').forEach((b,i)=>b.classList.toggle('active',(i===0&&tab==='simple')||(i===1&&tab==='recipe')));
+  document.getElementById('ftab-simple-btn').classList.toggle('active',tab==='simple');
+  document.getElementById('ftab-recipe-btn').classList.toggle('active',tab==='recipe');
 }
 
 function togglePrepServings(){
@@ -557,45 +730,62 @@ function togglePrepServings(){
 }
 
 function recipeTotals(){
-  return ingredients.reduce((acc,ing)=>{
-    CORE_FIELDS.forEach(f=>acc[f]+=(+ing[f]||0));return acc;
-  },zeroCore());
+  const acc=zeroCore();
+  const customAcc={};
+  ingredients.forEach(ing=>{
+    CORE_FIELDS.forEach(f=>acc[f]+=(+ing[f]||0));
+    (ing.other||[]).forEach(o=>{
+      const k=o.name.toLowerCase().trim();
+      if(!customAcc[k]) customAcc[k]={name:o.name,unit:o.unit,val:0};
+      customAcc[k].val+=+o.value||0;
+    });
+  });
+  return {core:acc,custom:customAcc};
 }
 
 function renderIngredients(){
   document.getElementById('ingredient-list').innerHTML=ingredients.map((ing,i)=>`
     <div class="ingredient-row">
-      <div>
-        <div class="ing-info">${ing.name}${ing.amount?' — '+ing.amount:''}</div>
-        <div class="ing-meta">${ni(ing.calories)} kcal · P${ni(ing.protein)}g C${ni(ing.carbs)}g F${ni(ing.fat)}g</div>
+      <div class="ingredient-row-header">
+        <div>
+          <div class="ing-info">${ing.name}${ing.amount?' &mdash; '+ing.amount:''}</div>
+          <div class="ing-meta">${ni(ing.calories)} kcal &middot; P${ni(ing.protein)}g C${ni(ing.carbs)}g F${ni(ing.fat)}g</div>
+          ${ing.other&&ing.other.length?`<div class="ing-other-pills">${ing.other.map(o=>`<span class="ing-other-pill">${o.name}: ${n(o.value)}${o.unit}</span>`).join('')}</div>`:''}
+        </div>
+        <button class="btn-remove-ing" onclick="removeIngredient(${i})">&#10005;</button>
       </div>
-      <button class="btn-remove-ing" onclick="removeIngredient(${i})">×</button>
     </div>`).join('');
-  const t=recipeTotals();
+  const {core:t,custom}=recipeTotals();
   const isPrep=document.getElementById('food-is-prep').checked;
-  const servings=parseFloat(document.getElementById('food-total-servings')?.value)||1;
+  const servings=parseFloat(document.getElementById('food-total-servings')&&document.getElementById('food-total-servings').value)||1;
+  const customSummary=Object.values(custom).map(c=>`<div class="rt-item"><span class="rt-label">${c.name}: </span>${n(c.val)}${c.unit}</div>`).join('');
   document.getElementById('recipe-totals-display').innerHTML=ingredients.length>0?`
     <div class="recipe-totals">
       <div class="rt-item"><span class="rt-label">Total: </span>${ni(t.calories)} kcal</div>
       <div class="rt-item"><span class="rt-label">P </span>${ni(t.protein)}g</div>
       <div class="rt-item"><span class="rt-label">C </span>${ni(t.carbs)}g</div>
       <div class="rt-item"><span class="rt-label">F </span>${ni(t.fat)}g</div>
-      ${isPrep&&servings>1?`<div class="rt-item" style="width:100%;color:var(--green)">Per serving (÷${servings}): ${ni(t.calories/servings)} kcal · P${ni(t.protein/servings)}g C${ni(t.carbs/servings)}g F${ni(t.fat/servings)}g</div>`:''}
+      ${customSummary}
+      ${isPrep&&servings>1?`<div class="rt-item" style="width:100%;color:var(--green)">Per serving (&divide;${servings}): ${ni(t.calories/servings)} kcal &middot; P${ni(t.protein/servings)}g C${ni(t.carbs/servings)}g F${ni(t.fat/servings)}g</div>`:''}
     </div>`:'';
 }
 
 function addIngredient(){
-  const ing={name:document.getElementById('ing-name').value.trim(),amount:document.getElementById('ing-amount').value.trim()};
+  const ing={
+    name:document.getElementById('ing-name').value.trim(),
+    amount:document.getElementById('ing-amount').value.trim(),
+    calories:parseFloat(document.getElementById('ing-cal').value)||0,
+    protein:parseFloat(document.getElementById('ing-protein').value)||0,
+    carbs:parseFloat(document.getElementById('ing-carbs').value)||0,
+    fat:parseFloat(document.getElementById('ing-fat').value)||0,
+    fiber:parseFloat(document.getElementById('ing-fiber').value)||0,
+    sugar:parseFloat(document.getElementById('ing-sugar').value)||0,
+    other:ingOtherRows.filter(r=>r.name.trim()).map(r=>({name:r.name.trim(),value:parseFloat(r.value)||0,unit:r.unit.trim()}))
+  };
   if(!ing.name)return;
-  CORE_FIELDS.forEach(f=>ing[f]=parseFloat(document.getElementById('ing-'+['calories','protein','carbs','fat','fiber','sugar'].indexOf(f)>=0?f:f==='calories'?'cal':f)?.value)||0);
-  ing.calories=parseFloat(document.getElementById('ing-cal').value)||0;
-  ing.protein=parseFloat(document.getElementById('ing-protein').value)||0;
-  ing.carbs=parseFloat(document.getElementById('ing-carbs').value)||0;
-  ing.fat=parseFloat(document.getElementById('ing-fat').value)||0;
-  ing.fiber=parseFloat(document.getElementById('ing-fiber').value)||0;
-  ing.sugar=parseFloat(document.getElementById('ing-sugar').value)||0;
   ingredients.push(ing);
   ['ing-name','ing-amount','ing-cal','ing-protein','ing-carbs','ing-fat','ing-fiber','ing-sugar'].forEach(id=>document.getElementById(id).value='');
+  ingOtherRows=[];renderIngOtherRows();
   renderIngredients();
 }
 function removeIngredient(i){ingredients.splice(i,1);renderIngredients()}
@@ -605,14 +795,22 @@ function saveFood(){
   const totalServings=parseFloat(document.getElementById('food-total-servings').value)||1;
   const prepServing=document.getElementById('food-prep-serving').value.trim();
   let food={isPrep,totalServings:isPrep?totalServings:null,servingDesc:isPrep?prepServing:''};
+
   if(activeFoodTab==='recipe'){
     const nm=document.getElementById('recipe-name').value.trim();
     if(!nm||ingredients.length===0)return;
-    const t=recipeTotals();
+    const {core:t,custom}=recipeTotals();
     food.name=nm;food.isRecipe=true;
     CORE_FIELDS.forEach(f=>food[f]=isPrep?(t[f]/totalServings):t[f]);
     if(!isPrep)food.servingDesc='whole recipe';
-    food.other=[];
+    // Combine other nutrients from all ingredients
+    const combinedOther={};
+    Object.values(custom).forEach(c=>{
+      const k=c.name.toLowerCase().trim();
+      combinedOther[k]={name:c.name,value:isPrep?c.val/totalServings:c.val,unit:c.unit};
+    });
+    food.other=Object.values(combinedOther);
+    food.ingredients=ingredients.map(i=>({...i})); // save for future editing
   } else {
     const nm=document.getElementById('food-name').value.trim();
     if(!nm)return;
@@ -624,59 +822,78 @@ function saveFood(){
     });
     food.other=foodOtherRows.filter(r=>r.name.trim()).map(r=>({name:r.name.trim(),value:isPrep?parseFloat(r.value)/totalServings:parseFloat(r.value)||0,unit:r.unit.trim()}));
   }
-  state.foods.push(food);persist();closeModal('modal-food');renderFoods();
+
+  if(editFoodIdx!==null){
+    state.foods[editFoodIdx]=food;
+  } else {
+    state.foods.push(food);
+  }
+  persist();closeModal('modal-food');renderFoods();
 }
 
 /* ---- Goals tab ---- */
 function renderGoals(){
   const g=state.goals;
-  // Collect known custom nutrient names from foods and logs
+  const vis=g.vis||{};
+
+  // Collect known custom nutrient names
   const knownCustom=new Set();
   state.foods.forEach(f=>(f.other||[]).forEach(o=>knownCustom.add(o.name.trim())));
-  // Also scan recent logs
   for(let i=0;i<30;i++){
     const d=new Date();d.setDate(d.getDate()-i);
-    const dateStr=d.toISOString().slice(0,10);
-    getLog(dateStr).forEach(e=>(e.other||[]).forEach(o=>knownCustom.add(o.name.trim())));
+    getLog(d.toISOString().slice(0,10)).forEach(e=>(e.other||[]).forEach(o=>knownCustom.add(o.name.trim())));
   }
-
-  const gf=(id,label,val,placeholder='no goal')=>`
-    <div class="goal-row">
-      <div class="goal-row-label">${label}</div>
-      <input id="g-${id}" type="number" value="${val||''}" placeholder="${placeholder}"/>
-      <div></div>
-    </div>`;
-
   const customGoalMap={};
   (g.custom||[]).forEach(cg=>customGoalMap[cg.name.toLowerCase().trim()]=cg);
+
+  // Helper: one row with goal input + visibility toggle
+  const visRow=(id,label,val,visKey)=>`
+    <div class="vis-row">
+      <div class="vis-row-label">${label}</div>
+      <input id="g-${id}" type="number" value="${val!=null?val:''}" placeholder="no goal"/>
+      <div class="vis-toggle">
+        <label class="mini-toggle" title="Show on Today tab">
+          <input type="checkbox" ${vis[visKey]!==false?'checked':''} onchange="toggleVis('${visKey}',this.checked)"/>
+          <span class="mini-slider"></span>
+        </label>
+      </div>
+    </div>`;
 
   const customRows=(g.custom||[]).map((cg,i)=>`
     <div class="goal-row">
       <div class="goal-row-label">${cg.name} <span style="font-size:11px;color:var(--gray)">(${cg.unit||''})</span></div>
-      <input id="gcustom-${i}" type="number" value="${cg.goal||''}" placeholder="no goal"/>
-      <button class="btn-rm-goal" onclick="removeCustomGoal(${i})">×</button>
+      <input id="gcustom-${i}" type="number" value="${cg.goal!=null?cg.goal:''}" placeholder="no goal"/>
+      <div class="vis-toggle">
+        <label class="mini-toggle" title="Show on Today tab">
+          <input type="checkbox" ${vis['custom_'+cg.name.toLowerCase().trim()]!==false?'checked':''} onchange="toggleVis('custom_${cg.name.toLowerCase().trim()}',this.checked)"/>
+          <span class="mini-slider"></span>
+        </label>
+      </div>
+      <button class="btn-rm-goal" onclick="confirmRemoveCustomGoal(${i})">&#10005;</button>
     </div>`).join('');
 
-  // Suggest tracking names not yet in custom goals
   const untracked=[...knownCustom].filter(name=>!customGoalMap[name.toLowerCase().trim()]);
-  const suggestions=untracked.length>0?`<div style="margin-top:8px;font-size:12px;color:var(--gray)">Seen in your logs: ${untracked.map(n=>`<span style="cursor:pointer;text-decoration:underline;color:var(--blue)" onclick="addCustomGoalFromSuggestion('${n}')">${n}</span>`).join(', ')}</div>`:'';
+  const suggestions=untracked.length>0?`<div style="margin-top:8px;font-size:12px;color:var(--gray)">Seen in your logs: ${untracked.map(nm=>`<span style="cursor:pointer;text-decoration:underline;color:var(--blue)" onclick="addCustomGoalFromSuggestion('${nm}')">${nm}</span>`).join(', ')}</div>`:'';
 
   document.getElementById('tab-goals').innerHTML=`
     <div class="goals-form">
       <h3>Daily goals</h3>
-      <div style="font-size:12px;color:var(--gray);margin-bottom:14px">Leave any field blank to track without a goal.</div>
+      <div style="font-size:12px;color:var(--gray);margin-bottom:4px">Leave the goal blank to track without a target. Toggle the switch to show/hide on the Today tab.</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gray);margin-bottom:14px">
+        <span>Goal value</span><span style="margin-left:auto;margin-right:4px">Show today</span>
+      </div>
       <div class="goals-section-label" style="margin-top:0;padding-top:0;border:none">Macros</div>
-      ${gf('calories','Calories (kcal)',g.calories)}
-      ${gf('protein','Protein (g)',g.protein)}
-      ${gf('carbs','Carbs (g)',g.carbs)}
-      ${gf('fat','Fat (g)',g.fat)}
+      ${visRow('calories','Calories (kcal)',g.calories,'calories')}
+      ${visRow('protein','Protein (g)',g.protein,'protein')}
+      ${visRow('carbs','Carbs (g)',g.carbs,'carbs')}
+      ${visRow('fat','Fat (g)',g.fat,'fat')}
       <div class="goals-section-label">Other nutrients</div>
-      ${gf('fiber','Fiber (g)',g.fiber)}
-      ${gf('sugar','Sugar (g)',g.sugar)}
-      ${gf('sodium','Sodium (mg)',g.sodium)}
-      ${gf('potassium','Potassium (mg)',g.potassium)}
-      ${gf('vitc','Vitamin C (mg)',g.vitc)}
-      ${gf('iron','Iron (mg)',g.iron)}
+      ${visRow('fiber','Fiber (g)',g.fiber,'fiber')}
+      ${visRow('sugar','Sugar (g)',g.sugar,'sugar')}
+      ${visRow('sodium','Sodium (mg)',g.sodium,'sodium')}
+      ${visRow('potassium','Potassium (mg)',g.potassium,'potassium')}
+      ${visRow('vitc','Vitamin C (mg)',g.vitc,'vitc')}
+      ${visRow('iron','Iron (mg)',g.iron,'iron')}
       <div class="goals-section-label">Custom nutrients</div>
       <div id="custom-goal-rows">${customRows}</div>
       ${suggestions}
@@ -698,11 +915,17 @@ function renderGoals(){
     </div>`;
 }
 
+function toggleVis(key,val){
+  state.goals.vis[key]=val;
+  persist();
+  // Re-render today immediately if on today tab
+  if(activeTab==='today') renderToday();
+}
+
 function addCustomGoalFromSuggestion(name){
   document.getElementById('new-custom-name').value=name;
   document.getElementById('new-custom-name').focus();
 }
-
 function addCustomGoal(){
   const name=document.getElementById('new-custom-name').value.trim();
   const unit=document.getElementById('new-custom-unit').value.trim();
@@ -710,11 +933,14 @@ function addCustomGoal(){
   const exists=(state.goals.custom||[]).some(c=>c.name.toLowerCase()===name.toLowerCase());
   if(exists)return;
   state.goals.custom.push({name,unit,goal:null});
+  state.goals.vis['custom_'+name.toLowerCase().trim()]=true;
   persist();renderGoals();
 }
-
-function removeCustomGoal(i){
-  state.goals.custom.splice(i,1);persist();renderGoals();
+function confirmRemoveCustomGoal(i){
+  const name=state.goals.custom[i]?state.goals.custom[i].name:'this nutrient';
+  confirmDialog('Remove custom nutrient',`Remove "${name}" from your tracked nutrients?`,()=>{
+    state.goals.custom.splice(i,1);persist();renderGoals();
+  });
 }
 
 function saveGoals(){
@@ -733,20 +959,17 @@ function saveGoals(){
 
 /* ---- Export / Import ---- */
 function exportData(){
-  const allKeys=[];
+  const data={exportedAt:new Date().toISOString(),version:'n3'};
   for(let i=0;i<localStorage.length;i++){
     const k=localStorage.key(i);
-    if(k.startsWith('n3_'))allKeys.push(k);
+    if(k.startsWith('n3_'))data[k]=ld(k);
   }
-  const data={exportedAt:new Date().toISOString(),version:'n3'};
-  allKeys.forEach(k=>data[k]=ld(k));
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
   a.href=url;a.download='nourish-backup-'+TODAY+'.json';a.click();
   URL.revokeObjectURL(url);
 }
-
 function importData(e){
   const file=e.target.files[0];if(!file)return;
   const reader=new FileReader();
@@ -756,8 +979,9 @@ function importData(e){
       if(data.version!=='n3'){document.getElementById('import-note').textContent='Error: unrecognized file format.';return}
       Object.entries(data).forEach(([k,v])=>{if(k.startsWith('n3_'))sv(k,v)});
       state.foods=ld('n3_foods')||[];
-      state.goals=ld('n3_goals')||{calories:2000,protein:150,carbs:200,fat:65,fiber:25,sugar:50,sodium:2300,potassium:3500,vitc:90,iron:18,custom:[]};
+      state.goals=ld('n3_goals')||{calories:2000,protein:150,carbs:200,fat:65,fiber:25,sugar:50,sodium:2300,potassium:3500,vitc:90,iron:18,custom:[],vis:{...DEFAULT_VIS}};
       if(!state.goals.custom)state.goals.custom=[];
+      if(!state.goals.vis)state.goals.vis={...DEFAULT_VIS};
       document.getElementById('import-note').textContent='Import successful! Data restored.';
       render();
     }catch{document.getElementById('import-note').textContent='Error reading file.'}
