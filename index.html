@@ -76,6 +76,7 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400}
 .btn-edit-food{background:var(--blue-light);color:var(--blue);border:none;padding:5px 10px;border-radius:99px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer}
 .btn-del-food{background:none;border:none;cursor:pointer;color:#ccc;font-size:16px}
 .btn-del-food:hover{color:var(--coral)}
+.btn-duplicate-food{background:var(--amber-light);color:var(--amber);border:none;padding:5px 10px;border-radius:99px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer}
 .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .cal-nav{background:none;border:.5px solid var(--border);border-radius:8px;padding:5px 12px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:16px}
@@ -233,32 +234,21 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400}
 <div id="modal-log" class="modal-overlay" style="display:none" onclick="closeModal('modal-log')">
 <div class="modal" onclick="event.stopPropagation()">
   <h3 id="log-modal-title">Log food</h3>
-  <div id="log-food-selector"></div>
-  <div id="log-manual-section">
-    <div class="form-group"><label>Food name</label><input id="log-name" placeholder="e.g. Greek yogurt"/></div>
-    <div class="form-group"><label>Serving description</label><input id="log-serving" placeholder="e.g. 1 cup"/></div>
-    <div class="form-grid-3">
-      <div class="form-group"><label>Calories</label><input id="log-cal" type="number" placeholder="0"/></div>
-      <div class="form-group"><label>Protein (g)</label><input id="log-protein" type="number" placeholder="0"/></div>
-      <div class="form-group"><label>Carbs (g)</label><input id="log-carbs" type="number" placeholder="0"/></div>
-      <div class="form-group"><label>Fat (g)</label><input id="log-fat" type="number" placeholder="0"/></div>
-      <div class="form-group"><label>Fiber (g)</label><input id="log-fiber" type="number" placeholder="0"/></div>
-      <div class="form-group"><label>Sugar (g)</label><input id="log-sugar" type="number" placeholder="0"/></div>
-    </div>
-    <div class="form-grid-4">
-      <div class="form-group"><label>Sodium (mg)</label><input id="log-sodium" type="number" placeholder="0"/></div>
-      <div class="form-group"><label>Potassium (mg)</label><input id="log-potassium" type="number" placeholder="0"/></div>
-      <div class="form-group"><label>Cholesterol (mg)</label><input id="log-cholesterol" type="number" placeholder="0"/></div>
-      <div class="form-group"><label>Calcium (mg)</label><input id="log-calcium" type="number" placeholder="0"/></div>
-      <div class="form-group"><label>Vitamin C (mg)</label><input id="log-vitc" type="number" placeholder="0"/></div>
-      <div class="form-group"><label>Iron (mg)</label><input id="log-iron" type="number" placeholder="0"/></div>
-    </div>
-    <div style="margin-top:4px">
-      <div class="section-divider">Other nutrients</div>
-      <div class="other-list" id="log-other-list"></div>
-      <button class="btn-add-other" onclick="addOtherLog()">+ Add nutrient</button>
+  <!-- Top quick-log bar: appears once a food is selected -->
+  <div id="log-top-actions" style="display:none;margin-bottom:14px">
+    <div id="log-selected-label" style="font-size:13px;font-weight:500;color:var(--green);margin-bottom:8px"></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-secondary" style="flex:1;padding:10px" onclick="closeModal('modal-log')">Cancel</button>
+      <button class="btn-primary" style="flex:1;padding:10px" onclick="saveLog()">Log it</button>
     </div>
   </div>
+  <!-- Search + food list -->
+  <div id="log-food-selector">
+    <input id="log-search-input" class="foods-search" placeholder="Search your foods&hellip;" oninput="filterLogFoods(this.value)" style="margin-bottom:8px"/>
+    <div class="food-select-list" id="log-food-list" style="max-height:260px"></div>
+    <div id="log-empty-foods" style="display:none;text-align:center;padding:20px;color:var(--gray);font-size:13px">No foods saved yet. Add some in My Foods first.</div>
+  </div>
+  <!-- Prep serving selector -->
   <div id="log-serving-section" style="display:none">
     <div class="serving-input-row">
       <label>Servings to log:</label>
@@ -266,9 +256,10 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400}
       <span id="log-servings-desc" style="font-size:12px;color:var(--green)"></span>
     </div>
   </div>
-  <div class="form-actions">
+  <!-- Bottom bar always visible; Log it enabled only once food selected -->
+  <div id="log-bottom-actions" class="form-actions" style="margin-top:12px">
     <button class="btn-secondary" onclick="closeModal('modal-log')">Cancel</button>
-    <button class="btn-primary" onclick="saveLog()">Log it</button>
+    <button class="btn-primary" id="log-bottom-log-btn" onclick="saveLog()" style="opacity:.35;cursor:default" disabled>Select a food above</button>
   </div>
 </div>
 </div>
@@ -516,19 +507,6 @@ function confirmDeleteLog(dateStr,i){
 }
 
 /* ---- Other nutrient rows ---- */
-let logOtherRows=[];
-function renderLogOtherRows(){
-  document.getElementById('log-other-list').innerHTML=logOtherRows.map((r,i)=>`
-    <div class="other-row">
-      <input placeholder="Nutrient name" value="${r.name}" oninput="logOtherRows[${i}].name=this.value"/>
-      <input type="number" placeholder="Amount" value="${r.value}" oninput="logOtherRows[${i}].value=this.value"/>
-      <input placeholder="unit" value="${r.unit}" oninput="logOtherRows[${i}].unit=this.value"/>
-      <button class="btn-remove-other" onclick="removeOtherLog(${i})">&#10005;</button>
-    </div>`).join('');
-}
-function addOtherLog(){logOtherRows.push({name:'',value:'',unit:''});renderLogOtherRows()}
-function removeOtherLog(i){logOtherRows.splice(i,1);renderLogOtherRows()}
-
 let foodOtherRows=[];
 function renderFoodOtherRows(){
   document.getElementById('food-other-list').innerHTML=foodOtherRows.map((r,i)=>`
@@ -559,71 +537,87 @@ function removeOtherIng(i){ingOtherRows.splice(i,1);renderIngOtherRows()}
 /* ---- Log modal ---- */
 let logFoodIdx=null;
 let logTargetDate=TODAY;
+let logSearchQuery='';
+
+function buildLogFoodList(q){
+  const foods=state.foods;
+  if(!foods.length) return null;
+  const lower=q.toLowerCase().trim();
+  return foods.map((f,i)=>({f,i})).filter(({f})=>!lower||f.name.toLowerCase().includes(lower)||(f.servingDesc&&f.servingDesc.toLowerCase().includes(lower)));
+}
+
+function renderLogFoodList(q){
+  const filtered=buildLogFoodList(q)||[];
+  const list=document.getElementById('log-food-list');
+  const empty=document.getElementById('log-empty-foods');
+  if(!state.foods.length){list.innerHTML='';if(empty)empty.style.display='block';return;}
+  if(empty)empty.style.display='none';
+  list.innerHTML=filtered.map(({f,i})=>`<div class="food-select-item${logFoodIdx===i?' sel':''}" onclick="selectLogFood(${i})">
+    <div class="fs-name">${f.name}${f.isPrep?' <span class=\'pill prep\'>prep</span>':''}</div>
+    <div class="fs-meta">${f.isPrep&&f.totalServings?f.totalServings+' servings &middot; ':''}${ni(f.calories)} kcal${f.servingDesc?' &middot; '+f.servingDesc:''}</div>
+  </div>`).join('');
+}
+
+function filterLogFoods(q){
+  logSearchQuery=q;
+  renderLogFoodList(q);
+}
 
 function openLogModal(prefill,dateStr){
-  logFoodIdx=null;logOtherRows=[];
+  logFoodIdx=null;logSearchQuery='';
   logTargetDate=dateStr||TODAY;
   const isPast=logTargetDate!==TODAY;
   document.getElementById('log-modal-title').textContent=isPast?'Log food for '+fmtDateShort(logTargetDate):'Log food';
-
-  const foods=state.foods;
-  const sel=foods.length?`
-    <div style="margin-bottom:12px">
-      <div class="s-label" style="margin-bottom:6px">Quick-log from My Foods</div>
-      <div class="food-select-list" id="food-selector-list">
-        ${foods.map((f,i)=>`<div class="food-select-item" onclick="selectLogFood(${i})">
-          <div class="fs-name">${f.name}${f.isPrep?' <span class="pill prep">prep</span>':''}</div>
-          <div class="fs-meta">${f.isPrep&&f.totalServings?f.totalServings+' servings &middot; ':''}${ni(f.calories)} kcal${f.servingDesc?' &middot; '+f.servingDesc:''}</div>
-        </div>`).join('')}
-      </div>
-      <div style="text-align:center;font-size:12px;color:var(--gray);margin:8px 0">&mdash; or enter manually below &mdash;</div>
-    </div>`:'';
-  document.getElementById('log-food-selector').innerHTML=sel;
-  document.getElementById('log-manual-section').style.display='block';
   document.getElementById('log-serving-section').style.display='none';
-  ['name','serving','cal','protein','carbs','fat','fiber','sugar','sodium','potassium','cholesterol','calcium','vitc','iron'].forEach(f=>{
-    const el=document.getElementById('log-'+f);
-    if(el)el.value=prefill?(prefill[f]||prefill[f==='cal'?'calories':f]||''):'';
-  });
+  document.getElementById('log-top-actions').style.display='none';
+  const bottomBtn=document.getElementById('log-bottom-log-btn');
+  bottomBtn.textContent='Select a food above';bottomBtn.disabled=true;bottomBtn.style.opacity='.35';bottomBtn.style.cursor='default';
   document.getElementById('log-servings-count').value=1;
-  renderLogOtherRows();openModal('modal-log');
+  const inp=document.getElementById('log-search-input');if(inp)inp.value='';
+  renderLogFoodList('');
+  openModal('modal-log');
+  setTimeout(()=>{const inp2=document.getElementById('log-search-input');if(inp2)inp2.focus();},100);
+}
+
+function openLogModalFromFood(foodIdx){
+  openLogModal(null,TODAY);
+  setTimeout(()=>selectLogFood(foodIdx),60);
 }
 
 function selectLogFood(i){
   logFoodIdx=i;const f=state.foods[i];
-  document.querySelectorAll('.food-select-item').forEach((el,idx)=>el.classList.toggle('sel',idx===i));
+  // Re-render list to show selection highlight
+  renderLogFoodList(logSearchQuery);
+  // Show top action bar with food name
+  const topActions=document.getElementById('log-top-actions');
+  const selLabel=document.getElementById('log-selected-label');
+  topActions.style.display='block';
+  selLabel.textContent='Selected: '+f.name+(f.servingDesc?' ('+f.servingDesc+')':'');
+  // Enable bottom button too
+  const bottomBtn=document.getElementById('log-bottom-log-btn');
+  bottomBtn.textContent='Log it';bottomBtn.disabled=false;bottomBtn.style.opacity='1';bottomBtn.style.cursor='pointer';
   if(f.isPrep){
-    document.getElementById('log-manual-section').style.display='none';
     document.getElementById('log-serving-section').style.display='block';
     document.getElementById('log-servings-desc').textContent=f.servingDesc||'';
     document.getElementById('log-servings-count').value=1;
   } else {
-    document.getElementById('log-manual-section').style.display='block';
     document.getElementById('log-serving-section').style.display='none';
-    const map={name:'name',serving:'servingDesc',cal:'calories',protein:'protein',carbs:'carbs',fat:'fat',fiber:'fiber',sugar:'sugar',sodium:'sodium',potassium:'potassium',cholesterol:'cholesterol',calcium:'calcium',vitc:'vitc',iron:'iron'};
-    Object.entries(map).forEach(([field,fkey])=>{const el=document.getElementById('log-'+field);if(el)el.value=f[fkey]||''});
-    logOtherRows=(f.other||[]).map(o=>({...o}));renderLogOtherRows();
   }
 }
 
 function saveLog(){
+  if(logFoodIdx===null)return; // nothing selected
   let entry;
-  if(logFoodIdx!==null&&state.foods[logFoodIdx]&&state.foods[logFoodIdx].isPrep){
-    const f=state.foods[logFoodIdx];const s=parseFloat(document.getElementById('log-servings-count').value)||1;
+  const f=state.foods[logFoodIdx];
+  if(f.isPrep){
+    const s=parseFloat(document.getElementById('log-servings-count').value)||1;
     entry={name:f.name,serving:f.servingDesc?s+'x '+f.servingDesc:s+' serving'+(s!==1?'s':''),isPrep:true,servingsLogged:s};
     CORE_FIELDS.forEach(field=>entry[field]=(f[field]||0)*s);
     entry.other=(f.other||[]).map(o=>({...o,value:(+o.value||0)*s}));
-  } else if(logFoodIdx!==null){
-    const f=state.foods[logFoodIdx];
+  } else {
     entry={name:f.name,serving:f.servingDesc||'',isPrep:false};
     CORE_FIELDS.forEach(field=>entry[field]=f[field]||0);
     entry.other=(f.other||[]).map(o=>({...o}));
-  } else {
-    const nm=document.getElementById('log-name').value.trim();if(!nm)return;
-    entry={name:nm,serving:document.getElementById('log-serving').value.trim(),isPrep:false};
-    const fmap={cal:'calories',protein:'protein',carbs:'carbs',fat:'fat',fiber:'fiber',sugar:'sugar',sodium:'sodium',potassium:'potassium',cholesterol:'cholesterol',calcium:'calcium',vitc:'vitc',iron:'iron'};
-    Object.entries(fmap).forEach(([f,key])=>{entry[key]=parseFloat(document.getElementById('log-'+f).value)||0;});
-    entry.other=logOtherRows.filter(r=>r.name.trim()).map(r=>({name:r.name.trim(),value:parseFloat(r.value)||0,unit:r.unit.trim()}));
   }
   entry.time=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   const log=getLog(logTargetDate);log.push(entry);setLog(logTargetDate,log);
@@ -633,7 +627,7 @@ function saveLog(){
 
 /* ---- Foods tab ---- */
 let foodsQuery='';
-function renderFoods(){
+function renderFoods(retainFocus){
   const q=foodsQuery.toLowerCase().trim();
   const matches=state.foods.filter(f=>!q||f.name.toLowerCase().includes(q)||(f.servingDesc&&f.servingDesc.toLowerCase().includes(q)));
   const html=state.foods.length===0?`<div class="empty-state">No saved foods yet.</div>`
@@ -648,20 +642,64 @@ function renderFoods(){
         <div class="food-actions">
           <button class="btn-log" onclick="logFromFood(${i})">Log</button>
           <button class="btn-edit-food" onclick="editFood(${i})">Edit</button>
+          <button class="btn-duplicate-food" onclick="duplicateFood(${i})">Duplicate</button>
           <button class="btn-del-food" onclick="confirmDeleteFood(${i})">&#10005;</button>
         </div>
       </div>`;}).join('');
-  document.getElementById('tab-foods').innerHTML=`
-    <div class="section-header"><h2>My foods</h2><button class="btn-add" onclick="openFoodModal()">+ Add food</button></div>
-    <input class="foods-search" placeholder="Search foods&hellip;" value="${foodsQuery}" oninput="foodsQuery=this.value;renderFoods()"/>
-    <div class="foods-list">${html}</div>`;
+
+  // Only rebuild full tab HTML if it doesn't exist yet; otherwise just refresh the list and header
+  const tab=document.getElementById('tab-foods');
+  if(!tab.querySelector('.foods-search')){
+    tab.innerHTML=`
+      <div class="section-header"><h2>My foods</h2><button class="btn-add" onclick="openFoodModal()">+ Add food</button></div>
+      <input class="foods-search" id="foods-search-input" placeholder="Search foods&hellip;" oninput="foodsQuery=this.value;renderFoods(true)"/>
+      <div class="foods-list" id="foods-list-container"></div>`;
+  }
+  document.getElementById('foods-search-input').value=foodsQuery;
+  document.getElementById('foods-list-container').innerHTML=html;
+  if(retainFocus){
+    const inp=document.getElementById('foods-search-input');
+    if(inp){const pos=inp.value.length;inp.focus();inp.setSelectionRange(pos,pos);}
+  }
 }
 
 function confirmDeleteFood(i){
   const name=state.foods[i]?state.foods[i].name:'this food';
   confirmDialog('Delete food','Delete "'+name+'" from your library? Past logs are unaffected.',()=>{state.foods.splice(i,1);persist();renderFoods();});
 }
-function logFromFood(i){logFoodIdx=null;openLogModal(null,TODAY);setTimeout(()=>selectLogFood(i),50)}
+function duplicateFood(i){
+  const f=state.foods[i];
+  editFoodIdx=null;editIngIdx=null;ingredients=[];foodOtherRows=[];ingOtherRows=[];
+  document.getElementById('food-modal-title').textContent='Duplicate food';
+  document.getElementById('food-save-btn').textContent='Save as new food';
+  if(f.isRecipe){
+    activeFoodTab='recipe';
+    document.getElementById('food-tab-simple').style.display='none';
+    document.getElementById('food-tab-recipe').style.display='block';
+    document.getElementById('ftab-simple-btn').classList.remove('active');
+    document.getElementById('ftab-recipe-btn').classList.add('active');
+    document.getElementById('recipe-name').value='Copy of '+f.name;
+    ingredients=(f.ingredients||[]).map(ing=>({...ing,other:(ing.other||[]).map(o=>({...o}))}));
+  } else {
+    activeFoodTab='simple';
+    document.getElementById('food-tab-simple').style.display='block';
+    document.getElementById('food-tab-recipe').style.display='none';
+    document.getElementById('ftab-simple-btn').classList.add('active');
+    document.getElementById('ftab-recipe-btn').classList.remove('active');
+    document.getElementById('food-name').value='Copy of '+f.name;
+    document.getElementById('food-serving').value=f.isPrep?'':(f.servingDesc||'');
+    const fmap={cal:'calories',protein:'protein',carbs:'carbs',fat:'fat',fiber:'fiber',sugar:'sugar',sodium:'sodium',potassium:'potassium',cholesterol:'cholesterol',calcium:'calcium',vitc:'vitc',iron:'iron'};
+    Object.entries(fmap).forEach(([field,key])=>{const el=document.getElementById('food-'+field);if(el)el.value=f[key]!=null?f[key]:'';});
+    foodOtherRows=(f.other||[]).map(o=>({...o}));renderFoodOtherRows();
+  }
+  const isPrep=!!f.isPrep;
+  document.getElementById('food-is-prep').checked=isPrep;
+  document.getElementById('prep-servings-row').style.display=isPrep?'block':'none';
+  document.getElementById('food-total-servings').value=f.totalServings||'';
+  document.getElementById('food-prep-serving').value=f.isPrep?(f.servingDesc||''):'';
+  resetIngForm();renderIngredients();openModal('modal-food');
+}
+function logFromFood(i){openLogModalFromFood(i)}
 
 /* ---- Food modal ---- */
 let ingredients=[];
@@ -1070,7 +1108,12 @@ let activeTab='today';
 function switchTab(tab){
   activeTab=tab;
   document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
-  ['today','foods','goals','history'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'block':'none');
+  ['today','foods','goals','history'].forEach(t=>{
+    const el=document.getElementById('tab-'+t);
+    el.style.display=t===tab?'block':'none';
+    // Reset foods tab so search input rebuilds when revisited
+    if(t==='foods'&&t!==tab)el.innerHTML='';
+  });
   render();
 }
 function render(){
